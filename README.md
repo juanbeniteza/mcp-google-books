@@ -1,6 +1,5 @@
-<readme>
-mcp-google-books
-================
+# MCP Google Books
+
 [![smithery badge](https://smithery.ai/badge/@juanbeniteza/mcp-google-books)](https://smithery.ai/server/@juanbeniteza/mcp-google-books)
 
 ## 🧐 What is This?
@@ -50,4 +49,53 @@ Special thanks to Google Books API for providing the required data.
 ## 🌍 License
 
 This repository is licensed under the MIT License. See the LICENSE file for more information.
-</readme>
+
+## 🛠️ Available Tools
+
+This MCP server provides the following tools for interacting with Google Books:
+
+### 1. Book Search
+Search for books by title using the Google Books API.
+
+```python
+mcp_Google_Books_book_search(query: str)
+```
+
+**Parameters:**
+- `query`: The title of the book to search for
+
+**Example:**
+```python
+# Search for a book by title
+result = mcp_Google_Books_book_search(query="The Hobbit")
+```
+
+### 2. Author Search
+Search for books by author using the Google Books API.
+
+```python
+mcp_Google_Books_author_search(query: str)
+```
+
+**Parameters:**
+- `query`: The name of the author to search for
+
+**Example:**
+```python
+# Search for books by an author
+result = mcp_Google_Books_author_search(query="J.R.R. Tolkien")
+```
+
+## 📝 Response Format
+
+Both tools return information about books including:
+- Title
+- Author(s)
+- Published Date
+- Description (when available)
+
+The results are returned in a formatted text that can be easily read and processed by MCP clients.
+
+## ⚠️ Rate Limiting
+
+Please note that these tools use the Google Books API, which has rate limiting. Make sure to handle your requests accordingly to avoid hitting API limits.
