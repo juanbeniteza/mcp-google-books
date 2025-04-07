@@ -55,9 +55,9 @@ async def book_search(query: str):
             results = []
             for result in data["items"]:
                 results.append(
-                    f"Title: {result['volumeInfo']['title']}\n"
-                    f"Authors: {', '.join(result['volumeInfo']['authors'])}\n"
-                    f"Published Date: {result['volumeInfo']['publishedDate']}\n"
+                    f"Title: {result['volumeInfo'].get('title')}\n"
+                    f"Authors: {', '.join(result['volumeInfo'].get('authors', []))}\n"
+                    f"Published Date: {result['volumeInfo'].get('publishedDate')}\n"
                     f"Description: {result['volumeInfo'].get('description')}\n"
                 )
 
@@ -98,9 +98,9 @@ async def author_search(query: str):
             results = []
             for result in data["items"]:
                 results.append(
-                    f"Title: {result['volumeInfo']['title']}\n"
-                    f"Authors: {', '.join(result['volumeInfo']['authors'])}\n"
-                    f"Published Date: {result['volumeInfo']['publishedDate']}\n"
+                    f"Title: {result['volumeInfo'].get('title')}\n"
+                    f"Authors: {', '.join(result['volumeInfo'].get('authors', []))}\n"
+                    f"Published Date: {result['volumeInfo'].get('publishedDate')}\n"
                     f"Description: {result['volumeInfo'].get('description')}\n"
                 )
 
