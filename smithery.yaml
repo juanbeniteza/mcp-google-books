@@ -1,0 +1,26 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - GOOGLE_API_KEY
+    properties:
+      GOOGLE_API_KEY:
+        type: string
+        description: API key for accessing Google Books API
+    description: Provide the Google Books API key.
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => ({
+      command: 'python',
+      args: ['main.py'],
+      env: {
+        GOOGLE_API_KEY: config.GOOGLE_API_KEY
+      }
+    })
+  exampleConfig:
+    GOOGLE_API_KEY: YourGoogleApiKeyPlaceholder
