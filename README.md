@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/juanbeniteza-mcp-google-books-badge.png)](https://mseep.ai/app/juanbeniteza-mcp-google-books)
+
 # MCP Google Books
 
 [![smithery badge](https://smithery.ai/badge/@juanbeniteza/mcp-google-books)](https://smithery.ai/server/@juanbeniteza/mcp-google-books)
