@@ -16,14 +16,33 @@ To install mcp-google-books for Claude Desktop automatically via [Smithery](http
 npx -y @smithery/cli install @juanbeniteza/mcp-google-books --client claude
 ```
 
+### Prerequisites
+
+Before running the server, ensure you have:
+1. Python 3.12 or higher installed
+2. A Google Books API key (get one from [Google Cloud Console](https://console.cloud.google.com/))
+3. A `.env` file with your API key:
+   ```
+   GOOGLE_API_KEY=your_api_key_here
+   ```
+
 ### Starting Up the Server
 
-To begin using mcp-google-books, connect to your MCP compatible environment (such as Claude) and then run the server.
+To begin using mcp-google-books:
 
-1.	Start the server by issuing the following command:
-	```sh
-	node mcp-google-books.js
-	```
+1. Install dependencies using `uv` (recommended) or `pip`:
+   ```bash
+   # Using uv (recommended)
+   uv pip install -e .
+
+   # Or using pip
+   pip install -e .
+   ```
+
+2. Start the server:
+   ```bash
+   python main.py
+   ```
    
 ## 💡 Example
 
@@ -58,32 +77,74 @@ This MCP server provides the following tools for interacting with Google Books:
 Search for books by title using the Google Books API.
 
 ```python
-mcp_Google_Books_book_search(query: str)
+book_search(query: str, max_results: int = 5)
 ```
 
 **Parameters:**
-- `query`: The title of the book to search for
+- `query`: The title of the book to search for (required)
+- `max_results`: Maximum number of results to return (default: 5, max: 40)
 
 **Example:**
 ```python
 # Search for a book by title
-result = mcp_Google_Books_book_search(query="The Hobbit")
+result = book_search(query="The Hobbit")
+
+# Get more results
+result = book_search(query="Python Programming", max_results=10)
 ```
 
 ### 2. Author Search
 Search for books by author using the Google Books API.
 
 ```python
-mcp_Google_Books_author_search(query: str)
+author_search(query: str, max_results: int = 10)
 ```
 
 **Parameters:**
-- `query`: The name of the author to search for
+- `query`: The name of the author to search for (required)
+- `max_results`: Maximum number of results to return (default: 10, max: 40)
 
 **Example:**
 ```python
 # Search for books by an author
-result = mcp_Google_Books_author_search(query="J.R.R. Tolkien")
+result = author_search(query="J.R.R. Tolkien")
+```
+
+### 3. ISBN Search
+Search for a specific book by its ISBN (International Standard Book Number).
+
+```python
+isbn_search(isbn: str)
+```
+
+**Parameters:**
+- `isbn`: ISBN-10 or ISBN-13 of the book (required)
+
+**Example:**
+```python
+# Search by ISBN-13
+result = isbn_search(isbn="978-0-547-92822-7")
+
+# Search by ISBN-10
+result = isbn_search(isbn="0547928227")
+```
+
+### 4. Subject Search
+Search for books by subject or category.
+
+```python
+subject_search(subject: str, max_results: int = 10)
+```
+
+**Parameters:**
+- `subject`: Subject or category to search for (required)
+- `max_results`: Maximum number of results to return (default: 10, max: 40)
+
+**Example:**
+```python
+# Search for books in a subject
+result = subject_search(subject="science fiction")
+result = subject_search(subject="medieval history", max_results=15)
 ```
 
 ## 📝 Response Format
