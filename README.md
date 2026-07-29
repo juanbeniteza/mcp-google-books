@@ -86,15 +86,60 @@ mcp_Google_Books_author_search(query: str)
 result = mcp_Google_Books_author_search(query="J.R.R. Tolkien")
 ```
 
+### 3. Download Book
+Downloads a public-domain book by title and saves it to disk.
+
+```python
+mcp_Google_Books_download_book(query: str, author: str = "", output_dir: str = ".")
+```
+
+**Parameters:**
+- `query`: The title of the book to search for and download
+- `author`: Author name, to disambiguate titles reused by multiple authors (optional, but recommended - see below)
+- `output_dir`: Directory to save the downloaded file into (default: current directory)
+
+**Example:**
+```python
+# Download a public-domain book by title
+result = mcp_Google_Books_download_book(query="Pride and Prejudice")
+
+# Pass author for classical/scholastic titles reused by multiple authors
+result = mcp_Google_Books_download_book(query="Cursus Theologicus", author="John of St. Thomas")
+```
+
+This only downloads books that are legitimately freely available:
+1. It first tries Google Books' own official PDF/EPUB download link, which
+   Google only exposes when it has classified the volume as public domain.
+2. If that isn't available, it falls back to a matching full-text scan on
+   the Internet Archive - but **only** for titles Google Books has already
+   confirmed are public domain. Archive.org's own search index mixes
+   legitimate public-domain scans with unauthorized uploads of in-copyright
+   books, so that confirmation from Google Books is required before it is
+   trusted as a source.
+
+It will not download in-copyright books that are only available in
+snippet/preview view.
+
+Some titles (especially classical/scholastic works) were used by several
+different authors - for example "Cursus Theologicus" was written by John of
+St. Thomas as well as by other theologians such as Billuart and Tournely.
+Without `author`, the Internet Archive fallback can only match on title text
+and may return the wrong author's book; passing `author` filters that search
+by creator as well.
+
 ## 📝 Response Format
 
-Both tools return information about books including:
+`book_search` and `author_search` return information about books including:
 - Title
 - Author(s)
 - Published Date
 - Description (when available)
 
 The results are returned in a formatted text that can be easily read and processed by MCP clients.
+
+`download_book` returns a message describing the outcome: the source and
+saved file path on success, or an explanation when no legitimate download is
+available.
 
 ## ⚠️ Rate Limiting
 
