@@ -74,10 +74,14 @@ async def _stream_download(url: str, filepath: str, headers: dict | None = None)
     return total
 
 
-async def _search_google_books_volumes(query: str) -> dict:
-    """Run a Google Books title search and return the raw response JSON."""
+async def _search_google_books_volumes(query: str, author: str | None = None) -> dict:
+    """Run a Google Books title (optionally + author) search and return the raw response JSON."""
+    q = f"intitle:{query}"
+    if author:
+        q += f"+inauthor:{author}"
+
     params = {
-        "q": f"intitle:{query}",
+        "q": q,
         "printType": "books",
         "maxResults": 10,
         "key": GOOGLE_API_KEY,
@@ -150,14 +154,24 @@ async def _download_from_google_books(volumes_data: dict, output_dir: str) -> st
     return None
 
 
-async def _download_from_archive_org(query: str, output_dir: str) -> str | None:
+async def _download_from_archive_org(query: str, output_dir: str, author: str | None = None) -> str | None:
     """Fall back to the Internet Archive's full-text scans when Google Books
     itself has no public-domain download available for the title.
+
+    Classical/scholastic titles are often reused by multiple different
+    authors (e.g. "Cursus Theologicus" was used by John of St. Thomas,
+    Billuart, Tournely, and others) - passing `author` narrows the search to
+    that creator so the wrong author's book isn't downloaded instead.
     """
+    search_query = f"title:({query})"
+    if author:
+        search_query += f" AND creator:({author})"
+    search_query += " AND mediatype:texts"
+
     search_params = {
-        "q": f"title:({query}) AND mediatype:texts",
+        "q": search_query,
         "fl[]": ["identifier", "title"],
-        "rows": 5,
+        "rows": 10,
         "output": "json",
     }
 
@@ -304,7 +318,7 @@ async def author_search(query: str):
 
 
 @mcp.tool()
-async def download_book(query: str, output_dir: str = "."):
+async def download_book(query: str, author: str = "", output_dir: str = "."):
     """Downloads a public-domain book by title and saves it to disk.
 
     Only works for books that are legitimately freely downloadable: it first
@@ -318,21 +332,29 @@ async def download_book(query: str, output_dir: str = "."):
     unauthorized uploads of in-copyright books alongside legitimate public
     domain scans, so that confirmation is required first).
 
+    Passing `author` is strongly recommended for classical/scholastic
+    titles, since many were reused by multiple authors (e.g. "Cursus
+    Theologicus" was written by several different theologians) - without it,
+    the Internet Archive fallback can only match on title text and may
+    return the wrong author's book.
+
     Args:
         query: Title of the book to search for and download (required)
+        author: Author name, to disambiguate titles reused by multiple authors (optional)
         output_dir: Directory to save the downloaded file into (default: current directory)
     """
     try:
         os.makedirs(output_dir, exist_ok=True)
+        author = author or None
 
-        volumes_data = await _search_google_books_volumes(query)
+        volumes_data = await _search_google_books_volumes(query, author)
 
         result = await _download_from_google_books(volumes_data, output_dir)
         if result:
             return result
 
         if _is_confirmed_public_domain(volumes_data):
-            result = await _download_from_archive_org(query, output_dir)
+            result = await _download_from_archive_org(query, output_dir, author)
             if result:
                 return result
 

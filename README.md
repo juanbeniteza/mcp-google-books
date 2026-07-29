@@ -90,17 +90,21 @@ result = mcp_Google_Books_author_search(query="J.R.R. Tolkien")
 Downloads a public-domain book by title and saves it to disk.
 
 ```python
-mcp_Google_Books_download_book(query: str, output_dir: str = ".")
+mcp_Google_Books_download_book(query: str, author: str = "", output_dir: str = ".")
 ```
 
 **Parameters:**
 - `query`: The title of the book to search for and download
+- `author`: Author name, to disambiguate titles reused by multiple authors (optional, but recommended - see below)
 - `output_dir`: Directory to save the downloaded file into (default: current directory)
 
 **Example:**
 ```python
 # Download a public-domain book by title
 result = mcp_Google_Books_download_book(query="Pride and Prejudice")
+
+# Pass author for classical/scholastic titles reused by multiple authors
+result = mcp_Google_Books_download_book(query="Cursus Theologicus", author="John of St. Thomas")
 ```
 
 This only downloads books that are legitimately freely available:
@@ -115,6 +119,13 @@ This only downloads books that are legitimately freely available:
 
 It will not download in-copyright books that are only available in
 snippet/preview view.
+
+Some titles (especially classical/scholastic works) were used by several
+different authors - for example "Cursus Theologicus" was written by John of
+St. Thomas as well as by other theologians such as Billuart and Tournely.
+Without `author`, the Internet Archive fallback can only match on title text
+and may return the wrong author's book; passing `author` filters that search
+by creator as well.
 
 ## 📝 Response Format
 
